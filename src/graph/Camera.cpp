@@ -70,9 +70,9 @@ void Camera::createMatrices() {
 
 void Camera::update() {
     front = glm::normalize(glm::vec3 {
-            static_cast<float>(cos(glm::radians(yaw)) * cos(glm::radians(pitch))),
-            static_cast<float>(sin(glm::radians(pitch))),
-            static_cast<float>(sin(glm::radians(yaw)) * cos(glm::radians(pitch)))});
+            static_cast<float>(cos(yaw) * cos(pitch)),
+            static_cast<float>(sin(pitch)),
+            static_cast<float>(sin(yaw) * cos(pitch))});
     right = glm::normalize(glm::cross(front, worldUp));
     up = glm::normalize(glm::cross(right, front));
 }
