@@ -18,15 +18,14 @@ public:
 
     void reset();
     void swap();
-private:
-    Window* window;
-    Camera* camera;
 
     Shader sWorld;
     unsigned int uProjection;
     unsigned int uModel;
     unsigned int uView;
+    unsigned int uHighlight;
 
-    bool dir = true;
-    unsigned char color = 0;
+private:
+    Window* window;
+    Camera* camera;
 };

@@ -30,7 +30,7 @@ glm::ivec3 BlockModel::getPos() {
     return pos;
 }
 
-void BlockModel::setPos(glm::ivec3 pos) {
+void BlockModel::setPos(glm::vec3 pos) {
     this->pos = pos;
 }
 
@@ -63,5 +63,10 @@ void BlockModel::render(Renderer &renderer) {
     glm::mat4 model = glm::mat4(1.0);
     model = glm::translate(model, pos);
     renderer.setModelMatrix(model);
+    renderer.sWorld.set(renderer.uHighlight, highlighted);
     mesh.draw();
+}
+
+void BlockModel::setHighlighted(bool highlighted) {
+    this->highlighted = highlighted;
 }

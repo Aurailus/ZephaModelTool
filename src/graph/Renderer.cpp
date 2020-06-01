@@ -22,6 +22,7 @@ Renderer::Renderer(Window *window, Camera* camera) :
     uProjection = sWorld.get("projection");
     uModel = sWorld.get("model");
     uView = sWorld.get("view");
+    uHighlight = sWorld.get("highlight");
 }
 
 void Renderer::setModelMatrix(const glm::mat4& modelMatrix) {
@@ -44,6 +45,8 @@ void Renderer::reset() {
 
     sWorld.set(uProjection, camera->getProjectionMatrix());
     sWorld.set(uView, camera->getViewMatrix());
+
+    sWorld.set(uHighlight, false);
 }
 
 void Renderer::swap() {
