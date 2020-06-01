@@ -59,6 +59,12 @@ Window::Window(glm::ivec2 size) :
     input.init(window);
 }
 
+std::shared_ptr<std::function<void(glm::ivec2)>> Window::addResizeCallback(std::function<void(glm::ivec2)> cb) {
+    auto sPtr = std::make_shared<std::function<void(glm::ivec2)>>(cb);
+    callbacks.emplace(sPtr);
+    return sPtr;
+}
+
 void Window::update() {
     input.update();
 }
@@ -78,4 +84,21 @@ bool Window::shouldEnd() {
 
 Input &Window::getInput() {
     return input;
+}
+
+void Window::resizeCallback(GLFWwindow* window, int width, int height) {
+    auto w = static_cast<Window*>(glfwGetWindowUserPointer(window));
+
+    glfwGetFramebufferSize(window, &w->size.x, &w->size.y);
+    glViewport(0, 0, w->size.x, w->size.y);
+
+    auto it = w->callbacks.cbegin();
+    while (it != w->callbacks.cend()) {
+        auto& cb = *it;
+        if (cb.use_count() == 1) it = w->callbacks.erase(it);
+        else {
+            (*cb)(w->size);
+            it++;
+        }
+    }
 }

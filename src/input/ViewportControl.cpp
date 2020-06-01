@@ -15,7 +15,11 @@
 
 ViewportControl::ViewportControl(Input &input, Camera &camera) :
     input(input),
-    camera(camera) {}
+    camera(camera) {
+    this->cb = input.addScrollCallback([&](int delta) {
+        distance -= delta * (distance / 6);
+    });
+}
 
 void ViewportControl::update() {
     if (input.keyDown(GLFW_MOUSE_BUTTON_LEFT)) {
@@ -38,7 +42,7 @@ void ViewportControl::update() {
 
     if (look.x <= 0) {
         lookYaw *= -1;
-        lookYaw += 3.14159;
+        lookYaw += M_PI;
     }
 
     camera.setPos(camPos);

@@ -67,6 +67,12 @@ bool Input::keyReleased(int key) const {
     return keysReleased[key];
 }
 
+std::shared_ptr<std::function<void(int delta)>> Input::addScrollCallback(std::function<void(int delta)> cb) {
+    auto sPtr = std::make_shared<std::function<void(int delta)>>(cb);
+    callbacks.emplace(sPtr);
+    return sPtr;
+}
+
 void Input::keyCallback(GLFWwindow* window, int key, int, int action, int) {
     auto w = static_cast<Window*>(glfwGetWindowUserPointer(window));
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) glfwSetWindowShouldClose(window, GL_TRUE);
@@ -77,7 +83,17 @@ void Input::keyCallback(GLFWwindow* window, int key, int, int action, int) {
 }
 
 void Input::scrollCallback(GLFWwindow *window, double xO, double yO) {
-//    auto w = static_cast<Window*>(glfwGetWindowUserPointer(window));
+    auto w = static_cast<Window*>(glfwGetWindowUserPointer(window));
+
+    auto it = w->getInput().callbacks.cbegin();
+    while (it != w->getInput().callbacks.cend()) {
+        auto& cb = *it;
+        if (cb.use_count() == 1) it = w->getInput().callbacks.erase(it);
+        else {
+            (*cb)(yO);
+            it++;
+        }
+    }
 }
 
 glm::ivec2 Input::mousePos() const {

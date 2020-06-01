@@ -4,6 +4,9 @@
 
 #pragma once
 
+#include <memory>
+#include <functional>
+
 class Input;
 class Camera;
 
@@ -21,4 +24,6 @@ private:
     double distance = 120;
 
     double pitch, yaw;
+
+    std::shared_ptr<std::function<void(int delta)>> cb;
 };

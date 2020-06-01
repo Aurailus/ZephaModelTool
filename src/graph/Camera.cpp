@@ -5,11 +5,13 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+#include "Window.h"
 #include "Camera.h"
 
-Camera::Camera(glm::ivec2 size) :
-    size(size) {
+Camera::Camera(Window* window) :
+    size(window->getSize()) {
     createMatrices();
+    resizeCallback = window->addResizeCallback([&](glm::ivec2 size) { changeSize(size); });
 }
 
 void Camera::changeSize(glm::ivec2 size){

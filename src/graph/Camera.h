@@ -4,13 +4,17 @@
 
 #pragma once
 
+#include <memory>
+#include <functional>
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
 #include <glm/mat4x4.hpp>
 
+class Window;
+
 class Camera {
 public:
-    Camera(glm::ivec2 size);
+    Camera(Window* window);
     void changeSize(glm::ivec2 size);
 
     glm::vec3 getPos();
@@ -51,5 +55,7 @@ private:
     glm::vec3 pos {0, 0, 0};
     double yaw = 0;
     double pitch = 0;
+
+    std::shared_ptr<std::function<void(glm::ivec2)>> resizeCallback;
 };
 

@@ -4,7 +4,10 @@
 
 #pragma once
 
+#include <memory>
+#include <functional>
 #include <glm/vec2.hpp>
+#include <unordered_set>
 
 class GLFWwindow;
 
@@ -18,6 +21,8 @@ public:
     bool keyPressed(int key) const;
     bool keyReleased(int key) const;
 
+    std::shared_ptr<std::function<void(int delta)>> addScrollCallback(std::function<void(int delta)> cb);
+
     glm::ivec2 mousePos() const;
     glm::ivec2 mouseDelta() const;
 private:
@@ -28,6 +33,8 @@ private:
     bool keysDown[1024] {false};
     bool keysPressed[1024] {false};
     bool keysReleased[1024] {false};
+
+    std::unordered_set<std::shared_ptr<std::function<void(int delta)>>> callbacks;
 
     GLFWwindow* window = nullptr;
     glm::ivec2 mouse, lastMouse;
