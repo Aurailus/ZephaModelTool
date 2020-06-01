@@ -9,9 +9,7 @@
 #include "graph/Renderer.h"
 
 #include "input/ViewportControl.h"
-
-#include "graph/Mesh.h"
-#include "graph/Texture.h"
+#include "model/BlockModelManager.h"
 
 class App {
 public:
@@ -27,7 +25,5 @@ private:
     Input& input;
 
     ViewportControl controller;
-
-    BlockMesh test,test2;
-    Texture tex;
+    BlockModelManager blockManager;
 };

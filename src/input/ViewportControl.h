@@ -21,7 +21,7 @@ private:
     Camera& camera;
 
     double panFactor = 0.01;
-    double distance = 120;
+    double distance = 4;
 
     double pitch, yaw;
 

@@ -10,21 +10,7 @@ App::App() :
     renderer(&window, &camera),
     input(window.getInput()),
 
-    controller(input, camera),
-
-    test({
-        {{-20, -20, -20}, {0, 0}, {0, 0, 0}},
-        {{-20,  20, -20}, {0, 1}, {0, 0, 0}},
-        {{-20,  20,  20}, {1, 1}, {0, 0, 0}},
-        {{-20, -20,  20}, {1, 0}, {0, 0, 0}},
-    }, {0, 1, 2, 2, 3, 0}),
-    test2({
-        {{ 20, -20, -20}, {0, 0}, {0, 0, 0}},
-        {{ 20,  20, -20}, {0, 1}, {0, 0, 0}},
-        {{ 20,  20,  20}, {1, 1}, {0, 0, 0}},
-        {{ 20, -20,  20}, {1, 0}, {0, 0, 0}},
-    }, {0, 3, 2, 2, 1, 0}),
-    tex("../assets/textures/dirt.png") {
+    controller(input, camera) {
 
     while (!window.shouldEnd()) {
         update();
@@ -39,12 +25,6 @@ void App::update() {
 
 void App::render() {
     renderer.reset();
-
-    glm::mat4 model = glm::mat4(1.0);
-    tex.use(0);
-    renderer.setModelMatrix(model);
-    test.draw();
-    test2.draw();
-
+    blockManager.render(renderer);
     renderer.swap();
 }
