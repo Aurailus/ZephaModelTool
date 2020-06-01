@@ -36,7 +36,6 @@ Window::Window(glm::ivec2 size) :
 
     // Setup callbacks
     glfwSetWindowUserPointer(window, this);
-    glfwSetScrollCallback(window, scrollCallback);
     glfwSetWindowSizeCallback(window, resizeCallback);
 
     // Set basic properties (v-sync, cursor mode, maximize)
@@ -56,6 +55,12 @@ Window::Window(glm::ivec2 size) :
 
     glEnable(GL_DEPTH_TEST);
     glViewport(0, 0, size.x, size.y);
+
+    input.init(window);
+}
+
+void Window::update() {
+    input.update();
 }
 
 glm::ivec2 Window::getSize() {
@@ -64,8 +69,13 @@ glm::ivec2 Window::getSize() {
 
 void Window::swapBuffers() {
     glfwSwapBuffers(window);
+    glfwPollEvents();
 }
 
 bool Window::shouldEnd() {
     return static_cast<bool>(glfwWindowShouldClose(window)) || glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS;
+}
+
+Input &Window::getInput() {
+    return input;
 }

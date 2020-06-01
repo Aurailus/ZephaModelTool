@@ -37,7 +37,7 @@ private:
     glm::mat4 projectionMatrix;
     glm::mat4 orthographicMatrix;
 
-    float fov = 80.0f;
+    float fov = 90.0f;
     float ratio = 0;
 
     static constexpr float projNearClip = 0.1f;

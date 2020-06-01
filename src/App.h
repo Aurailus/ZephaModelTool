@@ -4,9 +4,14 @@
 
 #pragma once
 
-#include "Window.h"
-#include "Camera.h"
-#include "Renderer.h"
+#include "graph/Window.h"
+#include "graph/Camera.h"
+#include "graph/Renderer.h"
+
+#include "input/ViewportControl.h"
+
+#include "graph/Mesh.h"
+#include "graph/Texture.h"
 
 class App {
 public:
@@ -19,4 +24,10 @@ private:
     Window window;
     Camera camera;
     Renderer renderer;
+    Input& input;
+
+    ViewportControl controller;
+
+    BlockMesh test,test2;
+    Texture tex;
 };

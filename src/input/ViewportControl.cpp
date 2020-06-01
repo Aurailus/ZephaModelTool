@@ -21,30 +21,27 @@ void ViewportControl::update() {
     if (input.keyDown(GLFW_MOUSE_BUTTON_LEFT)) {
         yaw += -input.mouseDelta().x * panFactor;
         pitch += -input.mouseDelta().y * panFactor;
+        pitch = fmin(fmax(pitch, -1.5), 1.5);
     }
 
-    float camAngleX = yaw;
-    float camAngleY = pitch;
+    glm::vec3 camPos = {
+        distance * -sinf(yaw) * cosf(pitch),
+        distance * -sinf(pitch),
+        -distance * cosf(yaw) * cosf(pitch)
+    };
 
-    camera.setPos({
-        distance * -sinf(camAngleX) * cosf(camAngleY),
-        distance * -sinf(camAngleY),
-        -distance * cosf(camAngleX) * cosf(camAngleY)
-    });
+    glm::vec3 look = -camPos;
+    float length = glm::length(look) + 0.00001;
 
-    std::cout << camera.getPos().x << ", " << camera.getPos().y << ", " << camera.getPos().z << std::endl;
+    float lookPitch = asin(look.y / length);
+    float lookYaw = asin(look.z / (cos(asin(look.y / length)) * length));
 
-    glm::vec3 cp = -camera.getPos();
+    if (look.x <= 0) {
+        lookYaw *= -1;
+        lookYaw += 3.14159;
+    }
 
-//    camera.setPitch(asin(-cp.y));
-//    camera.setYaw(atan2(cp.x, cp.z));
-
-    camera.setPitch(asin(cp.y / glm::length(cp)));
-    camera.setYaw(asin(cp.z / (cos(asin(cp.y / glm::length(cp))) * glm::length(cp))));
-
-
-
-//    camera.setPos({sin(yaw) * distance * sin(pitch), sin(pitch) * distance, cos(yaw) * distance * sin(pitch)});
-//    camera.setYaw(-yaw);
-//    camera.setPitch(-pitch);
+    camera.setPos(camPos);
+    camera.setPitch(lookPitch);
+    camera.setYaw(lookYaw);
 }

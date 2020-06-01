@@ -2,10 +2,9 @@
 // Created by aurailus on 2020-05-28.
 //
 
-#include <iostream>
-#include <stdexcept>
 #include <GL/glew.h>
 #include <glm/gtc/type_ptr.hpp>
+#include <iostream>
 
 #include "Renderer.h"
 
@@ -29,20 +28,14 @@ void Renderer::setModelMatrix(const glm::mat4& modelMatrix) {
     glUniformMatrix4fv(uModel, 1, GL_FALSE, glm::value_ptr(modelMatrix));
 }
 
-void Renderer::reset() {
-    if (dir) {
-        color++;
-        if (color == 255) dir = !dir;
-    }
-    else {
-        color--;
-        if (color == 0) dir = !dir;
-    }
+void Renderer::setClearColor(glm::vec4 color) {
+    glClearColor(color.r, color.g, color.b, color.a);
+}
 
-    glClearColor(color / 255.f, color / 255.f, color / 255.f, 1);
+void Renderer::reset() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    glEnable(GL_CULL_FACE);
+//    glEnable(GL_CULL_FACE);
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
     glDisable(GL_BLEND);
