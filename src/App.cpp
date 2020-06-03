@@ -22,7 +22,7 @@ App::App() :
 void App::update() {
     window.update();
     controller.update();
-    blockManager.update(input);
+    blockManager.update(input, controller);
 }
 
 void App::render() {

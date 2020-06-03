@@ -25,6 +25,8 @@ public:
 
     glm::ivec2 mousePos() const;
     glm::ivec2 mouseDelta() const;
+
+    void setMouseLocked(bool locked);
 private:
     static void keyCallback(GLFWwindow* window, int key, int code, int action, int mode);
     static void scrollCallback(GLFWwindow* window, double, double yO);
@@ -37,5 +39,7 @@ private:
     std::unordered_set<std::shared_ptr<std::function<void(int delta)>>> callbacks;
 
     GLFWwindow* window = nullptr;
-    glm::ivec2 mouse, lastMouse;
+    glm::ivec2 mouse, delta, lock;
+
+    bool mouseLocked = false;
 };

@@ -16,8 +16,8 @@ void main() {
     vec3 color = spec.xyz;
 
     if (highlight) {
-        color *= 1.4;
-        color += 0.025;
+        color *= 1.25;
+        color += 0.05;
     }
 
     outColor = color;

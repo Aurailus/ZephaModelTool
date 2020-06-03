@@ -4,25 +4,35 @@
 
 #pragma once
 
-#include "BlockModel.h"
 #include "../graph/Mesh.h"
 #include "../graph/Texture.h"
+#include "BlockModelInstance.h"
 
 class Input;
+class Camera;
 class Window;
 class Renderer;
-class Camera;
+class ViewportControl;
+class EditingBlockModel;
 
 class BlockModelManager {
 public:
     BlockModelManager(Camera* camera, Window* window);
 
+    void update(Input& input, ViewportControl& viewport);
     void render(Renderer& renderer);
-    void update(Input& input);
+
+    void setEditingModel(BlockModelInstance& instance);
+
+    std::vector<std::shared_ptr<BlockModel>> models;
+    std::vector<BlockModelInstance> instances;
 private:
     Camera* camera;
     Window* window;
 
-    std::vector<BlockModel> models;
     Texture dirt;
+
+    std::shared_ptr<BlockModel> editingModel = nullptr;
+    std::shared_ptr<EditingBlockModel> editingInstance = nullptr;
+    glm::ivec3 editingPos {};
 };

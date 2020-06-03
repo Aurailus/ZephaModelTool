@@ -49,10 +49,16 @@ void Input::update() {
         }
     }
 
-    lastMouse = mouse;
     double x, y;
+    glm::ivec2 lastMouse = mouse;
     glfwGetCursorPos(window, &x, &y);
     mouse = { static_cast<int>(x), static_cast<int>(y) };
+    delta = mouse - lastMouse;
+
+    if (mouseLocked) {
+        glfwSetCursorPos(window, lock.x, lock.y);
+        mouse = lock;
+    }
 }
 
 bool Input::keyDown(int key) const {
@@ -101,5 +107,12 @@ glm::ivec2 Input::mousePos() const {
 }
 
 glm::ivec2 Input::mouseDelta() const {
-    return mouse - lastMouse;
+    return delta;
+}
+
+void Input::setMouseLocked(bool locked) {
+    if ((this->mouseLocked && locked) || (!this->mouseLocked & !locked)) return;
+    this->mouseLocked = locked;
+    this->lock = mouse;
+    glfwSetInputMode(window, GLFW_CURSOR, locked ? GLFW_CURSOR_HIDDEN : GLFW_CURSOR_NORMAL);
 }

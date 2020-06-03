@@ -3,49 +3,85 @@
 //
 
 #include <glm/glm.hpp>
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
 
+#include "BlockModel.h"
 #include "BlockModelManager.h"
+#include "EditingBlockModel.h"
 
 #include "../graph/Camera.h"
 #include "../graph/Window.h"
 #include "../graph/Renderer.h"
+#include "../input/ViewportControl.h"
+#include "../input/Ray.h"
 
 BlockModelManager::BlockModelManager(Camera* camera, Window* window) :
     dirt("../assets/textures/dirt.png"),
     camera(camera),
     window(window) {
 
-    models.emplace_back();
-    models.emplace_back();
-    models.emplace_back();
-    models.emplace_back();
-    models.emplace_back();
+    models.emplace_back(std::make_shared<BlockModel>());
 
-    models[1].setPos({1, 0, 1});
-    models[2].setPos({-1, 0, 1});
-    models[3].setPos({1, 0, -1});
-    models[4].setPos({-1, 0, -1});
+    instances.emplace_back(models[0]);
+//    instances.emplace_back(models[0]);
+//    instances.emplace_back(models[0]);
+//    instances.emplace_back(models[0]);
+//    instances.emplace_back(models[0]);
+//    instances.emplace_back(models[0]);
+//    instances.emplace_back(models[0]);
+
+//    instances[0].setPos({1, 0, 0});
+//    instances[1].setPos({-1, 0, 0});
+//    instances[3].setPos({0, 0, 1});
+//    instances[4].setPos({0, 0, -1});
+//    instances[5].setPos({0, 1, 0});
+//    instances[6].setPos({0, -1, 0});
 }
 
-void BlockModelManager::update(Input& input) {
-    for (auto& model : models) model.setHighlighted(false);
+void BlockModelManager::update(Input& input, ViewportControl& viewport) {
+    for (auto& instance : instances) instance.setHighlighted(false);
 
-    glm::vec4 ray_clip = glm::vec4 {
-        (2.f * input.mousePos().x) / window->getSize().x - 1.f,
-        1.f - (2.f * input.mousePos().y) / window->getSize().y, -1.f, 1.f };
+    if (!editingModel) {
+        glm::vec3 dir = Ray::worldRayFromCursor(*window, *camera);
+        glm::vec3 ray = camera->getPos();
 
+        bool found = false;
+        float dis = 0.05f;
 
-    glm::vec4 ray_eye = glm::inverse(camera->getProjectionMatrix()) * ray_clip;
-    ray_eye = glm::vec4(ray_eye.x, ray_eye.y, -1.0, 0.0);
+        while (dis < 20) {
+            glm::vec3 end = ray + (dir * dis);
+            glm::ivec3 blockSpace = glm::floor(end + glm::vec3(0.5));
 
-    glm::vec3 ray = glm::vec3(glm::inverse(camera->getViewMatrix()) * ray_eye);
-    ray *= 20;
-    models[0].setPos(camera->getPos() + glm::vec3(ray));
+            for (auto& instance : instances) {
+                if (instance.getPos() == blockSpace) {
+                    instance.setHighlighted(true);
+                    if (input.keyPressed(GLFW_MOUSE_BUTTON_LEFT)) {
+                        viewport.setViewFocus(instance.getPos());
+                        setEditingModel(instance);
+                    }
+                    found = true;
+                    break;
+                }
+            }
 
-    std::cout << ray.x << ", " << ray.y << ", " << ray.z << std::endl;
+            if (found) break;
+            dis += 0.05;
+        }
+    }
+    else editingInstance->update(viewport, *window, *camera);
 }
 
 void BlockModelManager::render(Renderer &renderer) {
     dirt.use();
-    for (auto& model : models) model.render(renderer);
+    for (auto& instance : instances)
+        if (!editingModel || editingPos != instance.getPos()) instance.render(renderer);
+    if (editingInstance) editingInstance->render(renderer);
+}
+
+void BlockModelManager::setEditingModel(BlockModelInstance& instance) {
+    editingPos = instance.getPos();
+    editingModel = instance.getModel();
+
+    editingInstance = std::make_shared<EditingBlockModel>(editingPos, editingModel);
 }
