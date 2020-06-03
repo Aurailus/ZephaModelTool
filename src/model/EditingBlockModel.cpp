@@ -21,43 +21,11 @@ void EditingBlockModel::update(ViewportControl &viewport, Window &window, Camera
     glm::vec3 dir = Ray::worldRayFromCursor(window, camera);
     glm::vec3 ray = camera.getPos();
 
-//    bool found = false;
-//    float dis = 0.05f;
-//
-//    while (dis < 20) {
-//        glm::vec3 end = ray + (dir * dis);
-//        glm::ivec3 blockSpace = glm::floor(end + glm::vec3(0.5));
-//
-//        for (auto& face : model->faces) {
-////            if (instance.getPos() == blockSpace) {
-////                instance.setHighlighted(true);
-////                if (input.keyPressed(GLFW_MOUSE_BUTTON_LEFT)) {
-////                    viewport.setViewFocus(instance.getPos());
-////                    setEditingModel(instance);
-////                }
-////                found = true;
-////                break;
-////            }
-//        }
-//
-//        if (found) break;
-//        dis += 0.05;
-//    }
-
-    std::cout << Ray::rayInterceptsRect(this->model->faces[0].points, ray, dir) << std::endl;
-
     int ind = -1;
     float smallestDistance = 1000;
     for (int i = 0; i < faces.size(); i++) {
         facesHighlighted[i] = false;
-        float dist = Ray::rayInterceptsRect(this->model->faces[i].points
-//                {
-//                                                             this->model->faces[i].points[3],
-//                                                             this->model->faces[i].points[2],
-//                                                             this->model->faces[i].points[1],
-//                                                             this->model->faces[i].points[0]
-//            }
-            , ray, dir);
+        float dist = Ray::rayInterceptsRect(ray, dir, this->model->faces[i].points, pos);
         if (dist != 0 && dist < smallestDistance) {
             smallestDistance = dist;
             ind = i;

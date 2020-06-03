@@ -24,15 +24,15 @@ BlockModelManager::BlockModelManager(Camera* camera, Window* window) :
     models.emplace_back(std::make_shared<BlockModel>());
 
     instances.emplace_back(models[0]);
-//    instances.emplace_back(models[0]);
-//    instances.emplace_back(models[0]);
+    instances.emplace_back(models[0]);
+    instances.emplace_back(models[0]);
 //    instances.emplace_back(models[0]);
 //    instances.emplace_back(models[0]);
 //    instances.emplace_back(models[0]);
 //    instances.emplace_back(models[0]);
 
-//    instances[0].setPos({1, 0, 0});
-//    instances[1].setPos({-1, 0, 0});
+    instances[1].setPos({1, 0, 0});
+    instances[2].setPos({-1, 0, 0});
 //    instances[3].setPos({0, 0, 1});
 //    instances[4].setPos({0, 0, -1});
 //    instances[5].setPos({0, 1, 0});

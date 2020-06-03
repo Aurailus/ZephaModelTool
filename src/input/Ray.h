@@ -17,27 +17,40 @@ namespace Ray {
                     1.f - (2.f * window.getInput().mousePos().y) / window.getSize().y, -1.f, 1.f }), -1.0, 0.0));
     }
 
-    static float rayInterceptsRect(std::array<glm::vec3, 4> p, glm::vec3 rayOrigin, glm::vec3 rayDir) {
+    static float rayInterceptsRect(glm::vec3 rayOrigin, glm::vec3 rayDir, std::array<glm::vec3, 4> p, glm::vec3 pO = {}) {
         rayDir = glm::normalize(rayDir);
+        rayOrigin -= pO;
         glm::vec3 v1 = p[1] - p[0];
         glm::vec3 v2 = p[3] - p[0];
         glm::vec3 n = glm::normalize(glm::cross(v1, v2));
 
-        float A = p[0].y * (p[1].z - p[2].z) + p[1].y * (p[2].z - p[0].z) + p[2].y * (p[0].z - p[1].z);
-        float B = p[0].z * (p[1].x - p[2].x) + p[1].z * (p[2].x - p[0].x) + p[2].z * (p[0].x - p[1].x);
-        float C = p[0].x * (p[1].y - p[2].y) + p[1].x * (p[2].y - p[0].y) + p[2].x * (p[0].y - p[1].y);
-        float D = -p[0].x * (p[1].y * p[2].z - p[2].y * p[1].z) - p[1].x * (p[2].y * p[0].z - p[0].y * p[2].z) - p[2].x * (p[0].y * p[1].z - p[1].y * p[0].z);
+        float D = -glm::dot(n, p[0]);
 
-        float t = -(A * rayOrigin.x + B * rayOrigin.y + C * rayOrigin.z + D) / (A * rayDir.x + B * rayDir.y + C * rayDir.z);
+        float t = -(glm::dot(n, rayOrigin) + D) / (glm::dot(n, rayDir));
         if (t < 0) return 0;
         glm::vec3 intercepts = rayOrigin + rayDir * t;
 
+        // First pass
         v1 = glm::normalize(v1);
         glm::vec3 v3 = glm::normalize(p[3] - p[2]);
         glm::vec3 v4 = glm::normalize(intercepts - p[0]);
         glm::vec3 v5 = glm::normalize(intercepts - p[2]);
 
-        if (glm::dot(v1, v4) > 0 && glm::dot(v3, v5) > 0) return t;
-        return 0;
+        if (!(glm::dot(v1, v4) >= 0 && glm::dot(v3, v5) >= 0)) return 0;
+
+        // Second pass
+        v2 = glm::normalize(v2);
+        glm::vec3 v6 = glm::normalize(p[0] - p[3]);
+        glm::vec3 v7 = glm::normalize(intercepts - p[1]);
+        glm::vec3 v8 = glm::normalize(intercepts - p[3]);
+
+        if (!(glm::dot(v2, v7) >= 0 && glm::dot(v6, v8) >= 0)) return 0;
+        return t;
+    }
+
+    static bool rayInterceptsRects(glm::vec3 rayOrigin, glm::vec3 rayDir, std::vector<std::array<glm::vec3, 4>> pointsVec, glm::vec3 pO = {}) {
+        for (auto& p : pointsVec)
+            if (rayInterceptsRect(rayOrigin, rayDir, p, pO)) return true;
+        return false;
     }
 }
