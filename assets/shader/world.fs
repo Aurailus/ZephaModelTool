@@ -15,6 +15,8 @@ void main() {
     if (spec.a < 0.1) discard;
     vec3 color = spec.xyz;
 
+    if (!gl_FrontFacing) color *= vec3(1, 0, 0);
+
     if (highlight) {
         color *= 1.25;
         color += 0.05;

@@ -8,10 +8,11 @@ App::App() :
     window(),
     camera(&window),
     renderer(&window, &camera),
-    input(window.getInput()),
 
-    controller(input, camera),
-    blockManager(&camera, &window) {
+    blockManager(&camera, &window),
+
+    input(window.getInput()),
+    controller(input, window, camera, blockManager) {
 
     while (!window.shouldEnd()) {
         update();
@@ -22,7 +23,6 @@ App::App() :
 void App::update() {
     window.update();
     controller.update();
-    blockManager.update(input, controller);
 }
 
 void App::render() {

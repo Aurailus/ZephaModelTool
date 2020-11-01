@@ -6,13 +6,14 @@
 
 #include <memory>
 #include <functional>
+#include <glm/vec3.hpp>
 
 class Input;
 class Camera;
 
-class ViewportControl {
+class ViewportController {
 public:
-    ViewportControl(Input& input, Camera& camera);
+    ViewportController(Input& input, Camera& camera);
 
     void update();
     void setViewFocus(glm::vec3 focus);
@@ -22,6 +23,7 @@ private:
     Camera& camera;
 
     double panFactor = 0.0075;
+    double arrowFactor = 0.05;
     double distance = 4;
 
     glm::vec3 focus;

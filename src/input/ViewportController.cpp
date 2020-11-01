@@ -8,19 +8,19 @@
 #include <glm/glm.hpp>
 #include <iostream>
 
-#include "ViewportControl.h"
+#include "ViewportController.h"
 
 #include "../graph/Camera.h"
 #include "Input.h"
 
-ViewportControl::ViewportControl(Input &input, Camera &camera) :
+ViewportController::ViewportController(Input &input, Camera &camera) :
     input(input),
     camera(camera) {
 
     this->cb = input.addScrollCallback([&](int delta) { distance = fmin(fmax(distance - delta * (distance / 6), 1.1), 20); });
 }
 
-void ViewportControl::update() {
+void ViewportController::update() {
     if (input.keyDown(GLFW_MOUSE_BUTTON_MIDDLE)) {
         input.setMouseLocked(true);
         yaw += -input.mouseDelta().x * panFactor;
@@ -28,6 +28,15 @@ void ViewportControl::update() {
         pitch = fmin(fmax(pitch, -1.55), 1.55);
     }
     else input.setMouseLocked(false);
+
+    if (input.keyDown(GLFW_KEY_RIGHT))
+        yaw += arrowFactor;
+    if (input.keyDown(GLFW_KEY_LEFT))
+        yaw -= arrowFactor;
+    if (input.keyDown(GLFW_KEY_UP))
+        pitch = fmin(fmax(pitch - arrowFactor, -1.55), 1.55);
+    if (input.keyDown(GLFW_KEY_DOWN))
+        pitch = fmin(fmax(pitch + arrowFactor, -1.55), 1.55);
 
     glm::vec3 camPos = {
         distance * -sinf(yaw) * cosf(pitch),
@@ -51,6 +60,6 @@ void ViewportControl::update() {
     camera.setYaw(lookYaw);
 }
 
-void ViewportControl::setViewFocus(glm::vec3 focus) {
+void ViewportController::setViewFocus(glm::vec3 focus) {
     this->focus = focus;
 }

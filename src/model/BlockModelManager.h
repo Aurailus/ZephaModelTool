@@ -12,17 +12,18 @@ class Input;
 class Camera;
 class Window;
 class Renderer;
-class ViewportControl;
+class ViewportController;
 class EditingBlockModel;
 
 class BlockModelManager {
 public:
     BlockModelManager(Camera* camera, Window* window);
 
-    void update(Input& input, ViewportControl& viewport);
     void render(Renderer& renderer);
 
-    void setEditingModel(BlockModelInstance& instance);
+    bool highlightInstanceAtPos(glm::ivec3 pos);
+    std::shared_ptr<BlockModel> getEditingModel();
+    void setEditingInstance(glm::ivec3 pos);
 
     std::vector<std::shared_ptr<BlockModel>> models;
     std::vector<BlockModelInstance> instances;

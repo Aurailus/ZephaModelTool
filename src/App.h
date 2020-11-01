@@ -8,8 +8,8 @@
 #include "graph/Camera.h"
 #include "graph/Renderer.h"
 
-#include "input/ViewportControl.h"
 #include "model/BlockModelManager.h"
+#include "input/Controller.h"
 
 class App {
 public:
@@ -22,8 +22,9 @@ private:
     Window window;
     Camera camera;
     Renderer renderer;
-    Input& input;
 
-    ViewportControl controller;
     BlockModelManager blockManager;
+
+    Input& input;
+    Controller controller;
 };
